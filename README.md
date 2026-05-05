@@ -1,77 +1,55 @@
- Hyperledger Fabric DevOps Assignment
+Hyperledger Fabric DevOps Assignment
  Overview
-----------------------------------------------------------------------------
-This project demonstrates deployment of a production-like Hyperledger Fabric network using Docker on AWS EC2 Ubuntu instance. It includes blockchain network setup, channel creation, chaincode deployment, and transaction execution.
-
+This project demonstrates deployment of a production-like Hyperledger Fabric network using Docker on AWS EC2.
 
 Network Architecture
--------------------------------
-2 Organizations (Org1 & Org2)
-2 Peer Nodes
-1 Orderer Node
+-------------------------------------------------
+1 Organization (Org1 & Org2 from test-network)
+2 Peer nodes
+1 Orderer node
 CouchDB as state database
 TLS enabled communication
-Channel-based communication
-Chaincode deployment and execution
+Channel creation & Chaincode deployment
 
 
 Tools Used
---------------------------------
+-----------------------
 Hyperledger Fabric v2.x
 Docker & Docker Compose
 AWS EC2 (Ubuntu)
 Fabric CLI
-Bash scripting
-
-
-Project Structure
--------------------------------
-chaincode/
-compose/
-configtx/
-organizations/
-scripts/
-screenshots/
-cleanup.sh
-README.md
-.gitignore
 
 
 Setup Steps
+---------------------------------
 Start Network
---------------------------------------
 cd fabric-samples/test-network
 ./network.sh up createChannel -ca
-# Starts Fabric network, creates channel, enables TLS
+#Brings up Hyperledger Fabric network (orderer, peers, CouchDB), creates channel and enables TLS.
 
 
 Deploy Chaincode
-----------------------------------------------------
+---------------------------------------------------
 ./network.sh deployCC -ccn basic \
 -ccp ../asset-transfer-basic/chaincode-javascript \
 -ccl javascript
-# Installs, approves, and commits smart contract
+#Packages, installs, approves and commits the smart contract (basic) on the channel.
+
 
 Invoke Transaction
 ------------------------------------------------------------------------
 peer chaincode invoke -C mychannel -n basic \
 -c '{"function":"CreateAsset","Args":["asset1","blue","5","Tom","100"]}'
-# Writes data to blockchain ledger
+#Executes a blockchain transaction to create a new asset and write data to the ledger.
 
 
 Query Ledger
-------------------------------------------------
+--------------------------------------------
 peer chaincode query -C mychannel -n basic \
 -c '{"Args":["GetAllAssets"]}'
-# Reads data from blockchain ledger
+#Reads blockchain ledger data to verify stored assets and successful transactions.
 
-
-Cleanup
-------------------------------------
+Cleanup Script
+-----------------------
 ./cleanup.sh
-# Stops network and removes Docker resources
-
-
-End-to-End Flow
-----------------------------------------------------------
-Network → Channel → Chaincode → Invoke → Query → Cleanup
+#Stops Fabric network and removes Docker containers, images, volumes and artifacts.
