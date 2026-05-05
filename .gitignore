@@ -37,5 +37,5 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-
+# Hyperledger Fabric samples
 fabric-samples/
