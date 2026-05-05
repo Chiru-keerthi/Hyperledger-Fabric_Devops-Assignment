@@ -1,0 +1,38 @@
+# ===============================
+# Hyperledger Fabric artifacts
+# ===============================
+
+fabric-samples/test-network/organizations/
+fabric-samples/test-network/system-genesis-block/
+fabric-samples/test-network/channel-artifacts/
+fabric-samples/test-network/*.log
+
+# Crypto materials (VERY IMPORTANT)
+**/crypto-config/
+**/organizations/peerOrganizations/
+**/organizations/ordererOrganizations/
+
+# Fabric generated files
+*.block
+*.tx
+*.json
+
+# CA database & secrets
+*.db
+*.pem
+*.key
+*.crt
+*.sk
+
+# Docker artifacts
+*.tar
+*.tar.gz
+*.docker
+docker-compose.override.yml
+
+# Node dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
