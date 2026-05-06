@@ -4,42 +4,53 @@ on:
   push:
     branches: [main]
 
+# Helps future Node migration warnings (best effort)
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # STEP 1: Checkout code
+      # STEP 1: Checkout code (latest stable version)
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # STEP 2: Deploy to EC2 (REAL EXECUTION)
-      - name: Deploy Fabric on EC2
+      # STEP 2: Deploy to EC2 (REAL Fabric execution happens here)
+      - name: Deploy Fabric Network on EC2
         uses: appleboy/ssh-action@v1.0.3
+
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
+
           script: |
+            set -e
 
-            echo "🚀 Starting CI/CD Deployment on EC2"
+            echo "🚀 Starting Hyperledger Fabric CI/CD Deployment"
 
-            cd ~/fabric-project || exit
+            # Go to project directory
+            cd ~/fabric-project
 
+            # Pull latest code
             git pull origin main
 
-            echo "Stopping existing network..."
+            # Stop existing network (if any)
             cd fabric-samples/test-network
             ./network.sh down
 
-            echo "Starting Fabric network..."
+            # Start Fabric network
             ./network.sh up createChannel -ca
 
-            echo "Deploying chaincode..."
+            # Deploy chaincode
             ./network.sh deployCC \
               -ccn basic \
               -ccp ../asset-transfer-basic/chaincode-go \
               -ccl go
 
-            echo "Verifying containers..."
+            # Verify running containers
             docker ps
+
+            echo "✅ Deployment Completed Successfully"
