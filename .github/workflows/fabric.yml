@@ -29,7 +29,7 @@ jobs:
           script: |
             set -e
 
-            echo "🚀 Starting Hyperledger Fabric CI/CD Deployment"
+            echo "Starting Hyperledger Fabric CI/CD Deployment"
 
             # Go to project directory
             cd ~/fabric-project
@@ -53,4 +53,4 @@ jobs:
             # Verify running containers
             docker ps
 
-            echo "✅ Deployment Completed Successfully"
+            echo "Deployment Completed Successfully"
