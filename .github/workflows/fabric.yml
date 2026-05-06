@@ -1,24 +1,57 @@
-name: Fabric CI/CD
+name: Hyperledger Fabric CI/CD Pipeline
 
 on:
   push:
     branches: [main]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # STEP 1: Checkout latest code
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_KEY }}
-          script: |
-            cd ~/fabric-project
-            git pull origin main
-            ./scripts/deployChaincode.sh
+      # STEP 2: Set up Docker (required for Fabric scripts)
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          docker --version
+
+      # STEP 3: Install dependencies
+      - name: Install utilities
+        run: |
+          sudo apt-get install -y curl git jq
+
+      # STEP 4: Set permissions for Fabric scripts
+      - name: Prepare scripts
+        run: |
+          chmod +x fabric-samples/test-network/network.sh || true
+
+      # STEP 5: Bring up Fabric network (Docker-based)
+      - name: Start Fabric Network
+        run: |
+          cd fabric-samples/test-network
+          ./network.sh down
+          ./network.sh up createChannel -ca
+
+      # STEP 6: Deploy Chaincode
+      - name: Deploy Chaincode
+        run: |
+          cd fabric-samples/test-network
+          ./network.sh deployCC \
+            -ccn basic \
+            -ccp ../asset-transfer-basic/chaincode-go \
+            -ccl go
+
+      # STEP 7: Verify containers
+      - name: Verify running containers
+        run: |
+          docker ps
