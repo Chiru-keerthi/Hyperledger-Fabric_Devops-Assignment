@@ -38,5 +38,5 @@ node_modules/
 Thumbs.db
 
 # Hyperledger Fabric samples
-fabric-samples/
-,
+#fabric-samples/
+
