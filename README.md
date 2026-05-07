@@ -1,5 +1,5 @@
 Hyperledger Fabric DevOps Assignment
- Overview
+Overview
 This project demonstrates deployment of a production-like Hyperledger Fabric network using Docker on AWS EC2.
 
 Network Architecture
