@@ -3,7 +3,7 @@ Overview
 This project demonstrates deployment of a production-like Hyperledger Fabric network using Docker on AWS EC2.
 
 Network Architecture
--------------------------------------------------
+--------------------------------------------------
 1 Organization (Org1 & Org2 from test-network)
 2 Peer nodes
 1 Orderer node
